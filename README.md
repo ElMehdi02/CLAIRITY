@@ -1,111 +1,377 @@
-# AuraDx 🫁
-### Smart Airway Seal Monitoring
 
-**A BioHack 2026 project | RespAir Medical Devices Challenge**
+# 🫁 AuraDx — Smart Airway Seal Monitoring
 
-AuraDx is our proposed system for spotting **possible leaks around a breathing tube** and helping hospital staff respond quickly. It combines sensors, simple calculations, and software alerts.
+### Nucleate Pittsburgh BioHack 2026 | RespAir Medical Devices Challenge
 
-> **Project status:** Concept and prototype in development. The images show our proposed design, not a finished or clinically tested device. AuraDx is not for patient care or use with a clinical ventilator.
+**AuraDx** is a proposed smart monitoring system designed to help healthcare professionals detect possible breathing tube seal problems early. Our solution combines multiple sensors, data analysis, and a real-time alert system to help nurses respond when something goes wrong.
 
-![AuraDx concept overview](images/AuraDx_ Smart Airway Monitoring Pipeline-1.png)
-
-## 1. What problem are we trying to solve?
-
-Some hospital patients need a **ventilator**, a machine that helps them breathe. A breathing tube is placed into their airway. Near the end of the tube is a small inflatable balloon called a **cuff**. The cuff helps create a seal.
-
-If that seal is not good enough, air can escape, and fluids from above the cuff may pass toward the lungs. This can increase the risk of complications, including infection.
-
-**Our goal:** Help nurses notice signs of a possible seal problem earlier. We are **not** trying to replace the ventilator or simply detect whether a patient is breathing.
-
-## 2. Our solution
-
-We plan to combine a small sensor-based device with monitoring software. The device gathers measurements; the software analyzes them and displays an alert if something looks unusual.
-
-![How the proposed system works](images/Connected Respiratory Monitoring Workflow.png)
-
-**The process:**
-
-1. **Measure:** Sensors collect information near the breathing tube and from available ventilator signals.
-2. **Calculate:** A small controller sends measurements to our software, which compares them with expected patterns.
-3. **Check:** The software looks for signs of fluid buildup, pressure changes, or possible air leakage.
-4. **Alert:** If a possible problem is detected, the dashboard shows a warning. Our longer-term goal is to connect approved alerts to a hospital's nurse notification system.
-5. **Review:** Nurses or other trained clinicians assess the situation and decide what to do.
-
-## 3. What sensors are we considering?
-
-| Sensor or data source | What it checks | Why it helps |
-|---|---|---|
-| **Fluid (capacitive) sensor** | Changes that may indicate fluid collecting above the cuff | Gives an early fluid-buildup signal |
-| **pH sensor above the cuff** | How acidic or alkaline the fluid is | Adds information about fluid properties; does **not** identify its exact source |
-| **Cuff pressure sensor** | Pressure inside the cuff | Helps track pressure changes; does **not** directly prove a good seal |
-| **Ventilator pressure/flow data** | Breathing pressure, airflow, and volume differences | May reveal signs of an air leak |
-| **Optional experimental sensor below the cuff** | Changes in fluid properties below the cuff | Research idea only; **not** part of our first physical prototype |
-
-A single unusual sensor reading does **not** prove that the seal has failed. We want to compare several signals to reduce false alarms.
-
-## 4. What will the software do?
-
-Our first software version will:
-
-- Show live sensor readings and simple charts.
-- Compare measurements with a baseline.
-- Flag possible fluid buildup or air leakage.
-- Explain which measurements caused each warning.
-- Detect missing or disconnected sensors.
-- Save a history of alerts and timestamps.
-- Support testing with simulated data before any hardware is connected.
-
-Later, if we have enough reliable labeled data, we may test machine learning to recognize more complex patterns.
-
-## 5. How will nurses receive alerts?
-
-Our proposed alert levels are:
-
-| Status | Meaning | What the software shows |
-|---|---|---|
-| 🟢 **No abnormality detected** | Available readings are within the configured baseline | Monitoring continues |
-| 🟡 **Caution** | An unusual reading, such as possible fluid buildup | A warning with the sensor evidence |
-| 🔴 **Possible seal problem** | Multiple measurements suggest a possible leak | A prominent alert for clinical review |
-| ⚪ **Sensor fault** | A sensor is disconnected or its data cannot be trusted | A separate equipment/data warning |
-
-**Hospital connection:** Our long-term plan is to send alerts to a hospital's existing nurse notification or monitoring system. For the hackathon, we will demonstrate this with a **mock hospital dashboard or simulated notification**. A real integration would require hospital approval, compatible interfaces, privacy/security controls, and clinical safety testing.
-
-## 6. How we plan to build it
-
-1. **Design the prototype:** Agree on which sensors are practical and what each will measure.
-2. **Create simulated readings:** Generate examples of normal conditions, fluid buildup, suspected leaks, and sensor failures.
-3. **Build the software:** Use Python for calculations and a dashboard for charts and alerts.
-4. **Connect the hardware:** Have a microcontroller, such as an ESP32, send sensor readings to the software.
-5. **Test on a safe bench setup:** Use a breathing-tube model or simulator, never a patient.
-6. **Improve the alerts:** Measure how often the prototype correctly flags simulated problems and how often it gives false alarms.
-7. **Demonstrate hospital notifications:** Show how a simulated alert could reach a nurse-facing screen.
-
-## 7. Technology we plan to use
-
-- **Hardware:** Selected fluid, pH, and pressure sensors; microcontroller (proposed ESP32).
-- **Software:** Python for processing and detection.
-- **Dashboard:** Streamlit or a web interface for live charts and alerts.
-- **Data:** Simulated readings first, then safe benchtop sensor measurements.
-- **Integration:** Mock hospital alert interface for the hackathon; real hospital connectivity is future work.
-
-These are planned technologies, not all completed components.
-
-## 8. How we will know it works
-
-We will test several situations: normal readings, fluid collecting without a leak, a simulated seal leak, a ventilator-circuit leak, and a sensor disconnecting. We will measure **detection accuracy, false alarms, and time to alert** on these test scenarios.
-
-The goal is to show that the prototype can recognize useful warning patterns. We will **not** claim it can diagnose aspiration, identify bacteria, prevent pneumonia, or safely monitor real patients without further research and validation.
-
-## 9. Why AuraDx matters
-
-A possible breathing-tube seal problem can be difficult to notice immediately. AuraDx aims to bring information from several sensors into **one easy-to-read screen**, helping care teams see unusual changes and investigate sooner.
-
-**Our vision:** A simple monitoring tool that supports clinicians with clearer information and timely alerts.
+![AuraDx Overview](images/AuraDx_%20Smart%20Airway%20Monitoring%20Pipeline-1.png)
 
 ---
 
-**Team:** BioHack 2026 — AuraDx  
-**Challenge:** RespAir Medical Devices — Hardware & Biosensors  
-**Current stage:** Design and research prototype  
+## 1. The Problem
 
-*Educational hackathon project. Not a medical device cleared or approved for clinical use.*
+Patients who cannot breathe on their own may need a mechanical ventilator to help them breathe.
+
+A ventilator connects to a breathing tube called an **endotracheal tube (ETT)**. This tube has a small inflatable balloon, called a **cuff**, that helps create a seal inside the patient's airway.
+
+### What can go wrong?
+
+Sometimes, the cuff does not create a proper seal, or the seal becomes weaker over time.
+
+When this happens:
+
+1. Air may leak around the breathing tube.
+2. Saliva and other secretions may accumulate above the cuff.
+3. Small amounts of these secretions may pass into the lungs. This is called **microaspiration**.
+4. Microaspiration can contribute to lung infections, including ventilator-associated pneumonia (VAP).
+
+### Why is this important?
+
+Healthcare professionals need to know when a patient's breathing tube may not be properly sealed.
+
+Although ventilators can detect certain air leaks, these measurements may not identify every problem involving the cuff or fluid passing around it.
+
+Our goal is to provide additional information that helps nurses identify possible seal problems earlier.
+
+---
+
+## 2. Our Proposed Solution
+
+We propose developing **AuraDx**, a smart monitoring system that combines a sensor-equipped breathing tube concept with software that analyzes the collected data.
+
+Instead of relying on only one measurement, AuraDx would use multiple sensors to monitor different conditions around the breathing tube.
+
+The system would:
+
+- Monitor possible fluid accumulation above the cuff.
+- Measure changes in fluid acidity.
+- Monitor cuff pressure.
+- Analyze ventilator airflow and pressure readings.
+- Combine sensor information to identify possible problems.
+- Display the readings on a real-time dashboard.
+- Send alerts to nurses when the system detects a possible seal problem.
+
+Our long-term goal is to connect AuraDx with hospital monitoring software so healthcare professionals can receive alerts through their existing systems.
+
+![AuraDx Monitoring Workflow](images/Connected%20Respiratory%20Monitoring%20Workflow.png)
+
+---
+
+## 3. Why We Chose These Sensors
+
+Our team explored different sensor technologies and selected several possible approaches.
+
+### Sensor 1 — Capacitive Sensor
+
+**Purpose:** Detect possible fluid accumulation above the breathing tube cuff.
+
+A capacitive sensor measures changes in electrical capacitance. When fluid accumulates near the sensor, its readings may change.
+
+**Why we proposed it:**
+
+- It could provide an early indication of fluid buildup.
+- It could continuously monitor changes over time.
+- It could help identify conditions associated with microaspiration risk.
+
+However, fluid accumulation does not automatically mean the cuff is leaking.
+
+### Sensor 2 — pH Sensor Above the Cuff
+
+**Purpose:** Measure the acidity or alkalinity of fluid accumulating above the cuff.
+
+Different fluids can have different pH values.
+
+**Why we proposed it:**
+
+- It could provide additional information about accumulated secretions.
+- It could help identify unusual changes in fluid properties.
+- It could work alongside the capacitive sensor.
+
+A pH measurement alone cannot reliably identify the fluid's origin or determine whether an infection is present.
+
+### Sensor 3 — pH Sensor Below the Cuff
+
+**Purpose:** Explore whether changes in fluid chemistry below the cuff could provide evidence of possible fluid passage.
+
+**Why we proposed it:**
+
+- It could provide information from another location around the breathing tube.
+- It could help researchers investigate possible changes associated with fluid passage.
+
+This sensor is currently a research concept. Placing sensors below the cuff introduces additional medical and safety challenges.
+
+For our initial prototype, we plan to simulate this sensor rather than place it inside a patient's airway.
+
+### Sensor 4 — Cuff Pressure Sensor
+
+**Purpose:** Monitor pressure inside the inflatable cuff.
+
+**Why we proposed it:**
+
+- Changes in cuff pressure may indicate conditions that need attention.
+- It provides another measurement to support the monitoring system.
+- It can help the software detect unusual pressure changes.
+
+Cuff pressure does not directly prove that the cuff has a complete seal.
+
+### Sensor 5 — Ventilator Waveform Analysis
+
+**Purpose:** Analyze airflow, airway pressure, and breathing volume measurements.
+
+**Why we proposed it:**
+
+- Air leaks can sometimes create changes in ventilator measurements.
+- The software can analyze patterns over time.
+- Combining ventilator data with sensor readings may help identify possible seal problems.
+
+This is one of the main parts of our proposed software solution.
+
+---
+
+## 4. How AuraDx Will Work
+
+Our system will have four main stages.
+
+### Step 1 — Collect Sensor Data
+
+The sensors will continuously measure different conditions around the breathing tube.
+
+Examples include:
+
+- Fluid accumulation signals
+- pH measurements
+- Cuff pressure
+- Airflow
+- Airway pressure
+- Breathing volume differences
+
+### Step 2 — Analyze the Data
+
+A microcontroller will collect sensor measurements and send them to our software.
+
+The software will use Python to:
+
+- Process incoming measurements.
+- Compare readings with previous values.
+- Detect unusual changes.
+- Combine information from different sensors.
+- Identify possible sensor failures.
+- Determine whether an alert should be generated.
+
+### Step 3 — Display Results
+
+We plan to develop a dashboard showing:
+
+- Live sensor measurements
+- Pressure and airflow graphs
+- Possible leak warnings
+- Sensor connection status
+- Previous alerts
+- Explanations of detected abnormalities
+
+### Step 4 — Alert Healthcare Professionals
+
+If the software identifies a possible seal problem, it will generate an alert.
+
+Our proposed alert system includes:
+
+- 🟢 **Green:** No abnormality detected.
+- 🟡 **Yellow:** Unusual readings that need attention.
+- 🔴 **Red:** Possible seal problem requiring prompt investigation.
+- ⚪ **Sensor Fault:** Missing or unreliable sensor data.
+
+These alert levels will need testing and validation.
+
+In the future, we hope to integrate the system with hospital software so nurses can receive notifications directly.
+
+This hospital integration is a proposed feature and has not yet been implemented.
+
+---
+
+## 5. Why We Want to Combine Multiple Sensors
+
+One of our main ideas is to avoid depending on only one sensor.
+
+For example:
+
+A capacitive sensor might detect fluid accumulation, but that does not necessarily mean fluid has passed the cuff.
+
+A pressure sensor might detect a pressure change, but that does not always mean the cuff has lost its seal.
+
+By combining different measurements, our system may be able to provide more useful information.
+
+We hope this approach will:
+
+- Improve the reliability of warnings.
+- Reduce unnecessary alerts.
+- Detect unusual changes earlier.
+- Help healthcare professionals understand why an alert occurred.
+
+These benefits are goals that we still need to test.
+
+---
+
+## 6. Our Software Features
+
+We plan to develop the following features.
+
+### Real-Time Monitoring
+
+Display incoming sensor readings and ventilator measurements.
+
+### Multi-Sensor Analysis
+
+Combine information from different sensors to detect possible seal problems.
+
+### Smart Alert System
+
+Generate warnings when abnormal patterns are detected.
+
+### Sensor Failure Detection
+
+Identify disconnected sensors, missing readings, or unexpected sensor behavior.
+
+### Patient Baseline Monitoring
+
+Compare new measurements with earlier readings to identify unusual changes.
+
+### Alert History
+
+Save detected events with timestamps and information about which sensors triggered the warning.
+
+### Explainable Detection
+
+Show healthcare professionals why the software generated an alert.
+
+### AI and Machine Learning
+
+If sufficient labeled data becomes available, we may use machine learning to identify patterns associated with possible leaks.
+
+We will begin with simple detection rules before developing more advanced models.
+
+---
+
+## 7. What We Have Come Up With So Far
+
+After discussing the RespAir challenge, our team developed the concept of a multi-sensor airway monitoring system.
+
+Our proposed design includes:
+
+1. A sensor-based system for monitoring conditions around the breathing tube cuff.
+2. A combination of fluid, pH, pressure, and ventilator measurements.
+3. Software that analyzes incoming sensor data.
+4. A dashboard that displays measurements and warnings.
+5. An alert system designed to notify healthcare professionals.
+6. A future connection with hospital monitoring software.
+
+Our main idea is to combine hardware and software into one monitoring system.
+
+Rather than waiting for a single measurement to indicate a problem, we want AuraDx to examine multiple signals and provide an understandable warning.
+
+---
+
+## 8. Our Findings and Results
+
+### Research Findings
+
+During our initial research and discussions, we identified several important points:
+
+- An inadequate breathing tube cuff seal may contribute to air leakage and microaspiration.
+- Fluid accumulation above the cuff can occur without a confirmed seal failure.
+- Cuff pressure alone does not fully describe the quality of the seal.
+- Ventilator airflow and pressure measurements may help identify possible leaks.
+- Combining different sensors could provide additional information.
+- Medical monitoring systems must consider false alarms and sensor failures.
+
+These findings helped us develop the AuraDx concept.
+
+### Prototype Results
+
+**Current status: Planning and development**
+
+We have developed our proposed system design and identified the sensors and software features we want to investigate.
+
+We have not yet completed experimental testing or clinical validation.
+
+Once our prototype is working, we plan to measure:
+
+| Test | What We Want to Evaluate |
+|---|---|
+| Normal conditions | Does the system avoid unnecessary alerts? |
+| Fluid accumulation | Can the sensor detect changes in fluid levels? |
+| Possible cuff leak | Can the system identify abnormal patterns? |
+| Sensor failure | Can the software detect missing or invalid readings? |
+| Detection time | How quickly does the system generate an alert? |
+| False alarms | How often does it generate an incorrect warning? |
+| Multiple sensors | Does combining sensors improve detection? |
+
+We will add our actual results after completing these experiments.
+
+---
+
+## 9. Technologies We Plan to Use
+
+### Hardware
+
+- Capacitive fluid sensor
+- pH sensors
+- Pressure sensor
+- ESP32 or similar microcontroller
+- Simulated ventilator signals or an approved benchtop test setup
+
+### Software
+
+- Python for data processing
+- pandas and NumPy for calculations
+- Streamlit or another web framework for the dashboard
+- Plotly for real-time graphs
+- Machine learning libraries if needed
+- GitHub for collaboration
+
+The final technologies may change as we test the prototype.
+
+---
+
+## 10. Our Next Steps
+
+1. Finalize the sensor selection.
+2. Develop a safe benchtop testing setup.
+3. Connect the available sensors to a microcontroller.
+4. Collect sample measurements.
+5. Build the Python data analysis system.
+6. Create the monitoring dashboard.
+7. Implement the alert system.
+8. Test normal conditions and simulated leak scenarios.
+9. Evaluate detection accuracy and false alarms.
+10. Demonstrate a simulated nurse notification workflow.
+
+---
+
+## 11. Our Long-Term Vision
+
+Our long-term vision is to create a monitoring system that can support healthcare professionals caring for patients who require mechanical ventilation.
+
+We hope AuraDx could eventually help identify possible airway seal problems earlier and provide nurses with clearer information.
+
+Before any clinical use, the device and software would require appropriate engineering testing, safety evaluation, clinical validation, and regulatory review.
+
+**AuraDx is currently a research and hackathon prototype concept. It is not an approved medical device and should not be used for patient monitoring or clinical decisions.**
+
+---
+
+## 12. Project Information
+
+**Project:** AuraDx — Smart Airway Seal Monitoring
+
+**Event:** Nucleate Pittsburgh BioHack 2026
+
+**Challenge Sponsor:** RespAir Medical Devices
+
+**Track:** MedTech — Hardware & Biosensors
+
+**Project Focus:** Medical Sensors, Data Science, Real-Time Monitoring, and Healthcare Software
+
+---
+
+*Developed as part of Nucleate Pittsburgh BioHack 2026.*
