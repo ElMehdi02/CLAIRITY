@@ -1,0 +1,48 @@
+
+# ==========================================
+# CLAIRITY - Git Ignore
+# ==========================================
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python temporary files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# IDE and operating system files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# ==========================================
+# LARGE DATASETS
+# ==========================================
+
+# Ignore all local datasets
+/data/
+
+# ==========================================
+# LARGE OR GENERATED MODEL FILES
+# ==========================================
+
+*.pkl
+*.joblib
+
+# ==========================================
+# TEMPORARY OUTPUT
+# ==========================================
+
+*.log
+*.tmp
+.ipynb_checkpoints/

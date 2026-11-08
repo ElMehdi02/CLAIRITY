@@ -1,377 +1,572 @@
 
-# 🫁 AuraDx — Smart Airway Seal Monitoring
+<div align="center">
 
-### Nucleate Pittsburgh BioHack 2026 | RespAir Medical Devices Challenge
+# CLAIRITY
 
-**AuraDx** is a proposed smart monitoring system designed to help healthcare professionals detect possible breathing tube seal problems early. Our solution combines multiple sensors, data analysis, and a real-time alert system to help nurses respond when something goes wrong.
+### Intelligent Airway Monitoring System
+**Nucleate Pittsburgh BioHack 2026 | RespAir Medical Devices Challenge**
 
-![AuraDx Overview](images/AuraDx_%20Smart%20Airway%20Monitoring%20Pipeline-1.png)
+**A multisensor research prototype exploring the detection of fluid accumulation and possible microaspiration-related patterns around an endotracheal tube cuff.**
 
----
+![Python](https://img.shields.io/badge/Python-3.x-3776AB)
+![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B)
+![Machine Learning](https://img.shields.io/badge/ML-Random%20Forest-0066CC)
+![Status](https://img.shields.io/badge/Status-Research%20Prototype-D97706)
 
-## 1. The Problem
+[Dashboard](#interactive-dashboard) |
+[Results](#machine-learning-results) |
+[Interactive Charts](#interactive-visualizations) |
+[Installation](#installation)
 
-Patients who cannot breathe on their own may need a mechanical ventilator to help them breathe.
+</div>
 
-A ventilator connects to a breathing tube called an **endotracheal tube (ETT)**. This tube has a small inflatable balloon, called a **cuff**, that helps create a seal inside the patient's airway.
-
-### What can go wrong?
-
-Sometimes, the cuff does not create a proper seal, or the seal becomes weaker over time.
-
-When this happens:
-
-1. Air may leak around the breathing tube.
-2. Saliva and other secretions may accumulate above the cuff.
-3. Small amounts of these secretions may pass into the lungs. This is called **microaspiration**.
-4. Microaspiration can contribute to lung infections, including ventilator-associated pneumonia (VAP).
-
-### Why is this important?
-
-Healthcare professionals need to know when a patient's breathing tube may not be properly sealed.
-
-Although ventilators can detect certain air leaks, these measurements may not identify every problem involving the cuff or fluid passing around it.
-
-Our goal is to provide additional information that helps nurses identify possible seal problems earlier.
+> [!IMPORTANT]
+> **Research prototype — not for clinical use.**
+> CLAIRITY combines features extracted from recorded ventilator data with simulated capacitance and pH measurements. The physical sensor system has not been built or clinically validated. The predictions and alerts are experimental demonstrations, not medical diagnoses.
 
 ---
 
-## 2. Our Proposed Solution
+## 1. Project Overview
 
-We propose developing **AuraDx**, a smart monitoring system that combines a sensor-equipped breathing tube concept with software that analyzes the collected data.
+CLAIRITY is a proposed intelligent airway monitoring system designed to explore how multiple sensor measurements could provide additional information about conditions around an endotracheal tube (ETT) cuff.
 
-Instead of relying on only one measurement, AuraDx would use multiple sensors to monitor different conditions around the breathing tube.
+During mechanical ventilation, secretions may accumulate above the ETT cuff. Fluid passing around the cuff can contribute to microaspiration, a concern associated with ventilator-associated pneumonia (VAP).
 
-The system would:
+Our proposed system combines:
 
-- Monitor possible fluid accumulation above the cuff.
-- Measure changes in fluid acidity.
-- Monitor cuff pressure.
-- Analyze ventilator airflow and pressure readings.
-- Combine sensor information to identify possible problems.
-- Display the readings on a real-time dashboard.
-- Send alerts to nurses when the system detects a possible seal problem.
+- Capacitive sensing above and below the cuff
+- HPTS fluorescence-based pH sensing above and below the cuff
+- Recorded ventilator waveform features
+- Machine-learning classification
+- A Streamlit monitoring dashboard
+- Interactive sensor analysis and simulated alerts
 
-Our long-term goal is to connect AuraDx with hospital monitoring software so healthcare professionals can receive alerts through their existing systems.
+The goal is to investigate whether these different signals can help distinguish potentially concerning patterns in a controlled research simulation.
 
-![AuraDx Monitoring Workflow](images/Connected%20Respiratory%20Monitoring%20Workflow.png)
+### Project Objectives
 
----
-
-## 3. Why We Chose These Sensors
-
-Our team explored different sensor technologies and selected several possible approaches.
-
-### Sensor 1 — Capacitive Sensor
-
-**Purpose:** Detect possible fluid accumulation above the breathing tube cuff.
-
-A capacitive sensor measures changes in electrical capacitance. When fluid accumulates near the sensor, its readings may change.
-
-**Why we proposed it:**
-
-- It could provide an early indication of fluid buildup.
-- It could continuously monitor changes over time.
-- It could help identify conditions associated with microaspiration risk.
-
-However, fluid accumulation does not automatically mean the cuff is leaking.
-
-### Sensor 2 — pH Sensor Above the Cuff
-
-**Purpose:** Measure the acidity or alkalinity of fluid accumulating above the cuff.
-
-Different fluids can have different pH values.
-
-**Why we proposed it:**
-
-- It could provide additional information about accumulated secretions.
-- It could help identify unusual changes in fluid properties.
-- It could work alongside the capacitive sensor.
-
-A pH measurement alone cannot reliably identify the fluid's origin or determine whether an infection is present.
-
-### Sensor 3 — pH Sensor Below the Cuff
-
-**Purpose:** Explore whether changes in fluid chemistry below the cuff could provide evidence of possible fluid passage.
-
-**Why we proposed it:**
-
-- It could provide information from another location around the breathing tube.
-- It could help researchers investigate possible changes associated with fluid passage.
-
-This sensor is currently a research concept. Placing sensors below the cuff introduces additional medical and safety challenges.
-
-For our initial prototype, we plan to simulate this sensor rather than place it inside a patient's airway.
-
-### Sensor 4 — Cuff Pressure Sensor
-
-**Purpose:** Monitor pressure inside the inflatable cuff.
-
-**Why we proposed it:**
-
-- Changes in cuff pressure may indicate conditions that need attention.
-- It provides another measurement to support the monitoring system.
-- It can help the software detect unusual pressure changes.
-
-Cuff pressure does not directly prove that the cuff has a complete seal.
-
-### Sensor 5 — Ventilator Waveform Analysis
-
-**Purpose:** Analyze airflow, airway pressure, and breathing volume measurements.
-
-**Why we proposed it:**
-
-- Air leaks can sometimes create changes in ventilator measurements.
-- The software can analyze patterns over time.
-- Combining ventilator data with sensor readings may help identify possible seal problems.
-
-This is one of the main parts of our proposed software solution.
+1. Explore fluid accumulation and possible cuff leakage patterns.
+2. Combine ventilator information with simulated sensor measurements.
+3. Develop a machine-learning classification pipeline.
+4. Display sensor trends and predictions through a dashboard.
+5. Compare different machine-learning approaches.
+6. Analyze prediction errors and limitations.
+7. Prepare the software for possible future hardware integration.
 
 ---
 
-## 4. How AuraDx Will Work
+## 2. Proposed Medical Device
 
-Our system will have four main stages.
+CLAIRITY proposes a multisensor endotracheal tube monitoring system.
 
-### Step 1 — Collect Sensor Data
-
-The sensors will continuously measure different conditions around the breathing tube.
-
-Examples include:
-
-- Fluid accumulation signals
-- pH measurements
-- Cuff pressure
-- Airflow
-- Airway pressure
-- Breathing volume differences
-
-### Step 2 — Analyze the Data
-
-A microcontroller will collect sensor measurements and send them to our software.
-
-The software will use Python to:
-
-- Process incoming measurements.
-- Compare readings with previous values.
-- Detect unusual changes.
-- Combine information from different sensors.
-- Identify possible sensor failures.
-- Determine whether an alert should be generated.
-
-### Step 3 — Display Results
-
-We plan to develop a dashboard showing:
-
-- Live sensor measurements
-- Pressure and airflow graphs
-- Possible leak warnings
-- Sensor connection status
-- Previous alerts
-- Explanations of detected abnormalities
-
-### Step 4 — Alert Healthcare Professionals
-
-If the software identifies a possible seal problem, it will generate an alert.
-
-Our proposed alert system includes:
-
-- 🟢 **Green:** No abnormality detected.
-- 🟡 **Yellow:** Unusual readings that need attention.
-- 🔴 **Red:** Possible seal problem requiring prompt investigation.
-- ⚪ **Sensor Fault:** Missing or unreliable sensor data.
-
-These alert levels will need testing and validation.
-
-In the future, we hope to integrate the system with hospital software so nurses can receive notifications directly.
-
-This hospital integration is a proposed feature and has not yet been implemented.
-
----
-
-## 5. Why We Want to Combine Multiple Sensors
-
-One of our main ideas is to avoid depending on only one sensor.
-
-For example:
-
-A capacitive sensor might detect fluid accumulation, but that does not necessarily mean fluid has passed the cuff.
-
-A pressure sensor might detect a pressure change, but that does not always mean the cuff has lost its seal.
-
-By combining different measurements, our system may be able to provide more useful information.
-
-We hope this approach will:
-
-- Improve the reliability of warnings.
-- Reduce unnecessary alerts.
-- Detect unusual changes earlier.
-- Help healthcare professionals understand why an alert occurred.
-
-These benefits are goals that we still need to test.
-
----
-
-## 6. Our Software Features
-
-We plan to develop the following features.
-
-### Real-Time Monitoring
-
-Display incoming sensor readings and ventilator measurements.
-
-### Multi-Sensor Analysis
-
-Combine information from different sensors to detect possible seal problems.
-
-### Smart Alert System
-
-Generate warnings when abnormal patterns are detected.
-
-### Sensor Failure Detection
-
-Identify disconnected sensors, missing readings, or unexpected sensor behavior.
-
-### Patient Baseline Monitoring
-
-Compare new measurements with earlier readings to identify unusual changes.
-
-### Alert History
-
-Save detected events with timestamps and information about which sensors triggered the warning.
-
-### Explainable Detection
-
-Show healthcare professionals why the software generated an alert.
-
-### AI and Machine Learning
-
-If sufficient labeled data becomes available, we may use machine learning to identify patterns associated with possible leaks.
-
-We will begin with simple detection rules before developing more advanced models.
-
----
-
-## 7. What We Have Come Up With So Far
-
-After discussing the RespAir challenge, our team developed the concept of a multi-sensor airway monitoring system.
-
-Our proposed design includes:
-
-1. A sensor-based system for monitoring conditions around the breathing tube cuff.
-2. A combination of fluid, pH, pressure, and ventilator measurements.
-3. Software that analyzes incoming sensor data.
-4. A dashboard that displays measurements and warnings.
-5. An alert system designed to notify healthcare professionals.
-6. A future connection with hospital monitoring software.
-
-Our main idea is to combine hardware and software into one monitoring system.
-
-Rather than waiting for a single measurement to indicate a problem, we want AuraDx to examine multiple signals and provide an understandable warning.
-
----
-
-## 8. Our Findings and Results
-
-### Research Findings
-
-During our initial research and discussions, we identified several important points:
-
-- An inadequate breathing tube cuff seal may contribute to air leakage and microaspiration.
-- Fluid accumulation above the cuff can occur without a confirmed seal failure.
-- Cuff pressure alone does not fully describe the quality of the seal.
-- Ventilator airflow and pressure measurements may help identify possible leaks.
-- Combining different sensors could provide additional information.
-- Medical monitoring systems must consider false alarms and sensor failures.
-
-These findings helped us develop the AuraDx concept.
-
-### Prototype Results
-
-**Current status: Planning and development**
-
-We have developed our proposed system design and identified the sensors and software features we want to investigate.
-
-We have not yet completed experimental testing or clinical validation.
-
-Once our prototype is working, we plan to measure:
-
-| Test | What We Want to Evaluate |
+| Component | Proposed Function |
 |---|---|
-| Normal conditions | Does the system avoid unnecessary alerts? |
-| Fluid accumulation | Can the sensor detect changes in fluid levels? |
-| Possible cuff leak | Can the system identify abnormal patterns? |
-| Sensor failure | Can the software detect missing or invalid readings? |
-| Detection time | How quickly does the system generate an alert? |
-| False alarms | How often does it generate an incorrect warning? |
-| Multiple sensors | Does combining sensors improve detection? |
+| Capacitive sensor above cuff | Monitor changes associated with fluid accumulation |
+| Capacitive sensor below cuff | Explore possible fluid movement below the cuff |
+| HPTS pH sensor above cuff | Monitor simulated fluid chemistry |
+| HPTS pH sensor below cuff | Explore simulated chemical changes below the cuff |
+| Ventilator data | Provide respiratory signal context |
+| Machine-learning model | Classify experimental sensor patterns |
+| Dashboard | Visualize readings, predictions, and alerts |
 
-We will add our actual results after completing these experiments.
+**Important:** The proposed sensors have not been physically constructed or calibrated. pH and capacitance changes alone cannot confirm aspiration or diagnose pneumonia.
+
+### Proposed Monitoring Workflow
+
+```mermaid
+flowchart TD
+    A[Ventilator Signals] --> D[Data Processing]
+    B[Above-Cuff Sensors] --> D
+    C[Below-Cuff Sensors] --> D
+    D --> E[Feature Preparation]
+    E --> F[Machine Learning Model]
+    F --> G{Predicted Condition}
+    G --> H[Normal]
+    G --> I[At Risk]
+    G --> J[Critical]
+    G --> K[Sensor Failure]
+    H --> L[CLAIRITY Dashboard]
+    I --> L
+    J --> L
+    K --> L
+    L --> M[Interactive Charts and Simulated Alerts]
+```
+
+The current software demonstrates this workflow using recorded ventilator features and simulated sensor data.
 
 ---
 
-## 9. Technologies We Plan to Use
+## 3. Data Collection and Processing
+
+### Recorded Ventilator Dataset
+
+The project began with a ZIP archive containing **145 ventilator CSV recordings**.
+
+Our data-processing pipeline produced:
+
+| Metric | Result |
+|---|---:|
+| Source CSV recordings | 145 |
+| Recordings with extracted breath data | 144 |
+| Recordings without extracted breaths | 1 |
+| Total extracted breaths | 323,162 |
+| Columns in breath-level feature dataset | 13 |
+| Missing values in extracted feature dataset | 0 |
+
+The processed dataset is:
+
+`data/processed/ventilator_features.csv`
+
+### Extracted Features
+
+For each extracted breath, the project calculates:
+
+- Recording identifier
+- Breath identifier
+- Number of signal samples
+- Signal 1 mean, minimum, maximum, standard deviation, and range
+- Signal 2 mean, minimum, maximum, standard deviation, and range
+
+The two signals are named `signal_1` and `signal_2` because their physiological identities and measurement units have not yet been verified against the original dataset documentation.
+
+### Processing Scripts
+
+| Script | Purpose |
+|---|---|
+| `inspect_ventilator_data.py` | Inspect the original ventilator files |
+| `prepare_ventilator_data.py` | Extract breath-level features |
+| `check_recordings.py` | Examine recording extraction results |
+| `plot_ventilator_data.py` | Generate ventilator visualizations |
+| `analyze_ventilator_features.py` | Analyze extracted features |
+
+The original ventilator dataset's source, license, and channel definitions should be verified and cited before public redistribution.
+
+---
+
+## 4. Synthetic Sensor Generation
+
+Because the physical CLAIRITY device has not been built, we generated synthetic readings for four proposed sensors:
+
+1. `capacitance_above`
+2. `capacitance_below`
+3. `ph_above`
+4. `ph_below`
+
+These measurements were combined with extracted ventilator features.
+
+The simulated data includes overlapping values, noise, and missing readings to make the classification task more challenging than the original baseline.
+
+### Experimental Conditions
+
+| Condition | Meaning in the Simulation |
+|---|---|
+| Normal | Simulated readings without concerning patterns |
+| At Risk | Simulated readings associated with possible fluid accumulation |
+| Critical | Simulated readings associated with more concerning fluid-related patterns |
+| Sensor Failure | Simulated missing or unreliable sensor measurements |
+
+These are synthetic scenario labels, not confirmed patient conditions.
+
+### Hybrid Dataset V2
+
+File: `data/processed/clairity_hybrid_v2.csv`
+
+| Condition | Number of Rows |
+|---|---:|
+| Normal | 10,060 |
+| At Risk | 5,597 |
+| Critical | 2,748 |
+| Sensor Failure | 1,595 |
+| **Total** | **20,000** |
+
+The dataset contains **18 columns**.
+
+For the 1,595 simulated sensor-failure cases, below-cuff capacitance and pH values are missing. This creates an easily recognizable failure pattern and is an important limitation of the experiment.
+
+### Data Pipeline
+
+```mermaid
+flowchart TD
+    A[145 Original Ventilator CSV Files] --> B[Breath Extraction]
+    B --> C[323162 Extracted Breaths]
+    C --> D[Ventilator Feature Dataset]
+    E[Synthetic Capacitance and pH] --> F[Hybrid Data Generation]
+    D --> F
+    F --> G[20000 Hybrid Records]
+    G --> H[Model Training and Evaluation]
+    H --> I[Predictions and Error Analysis]
+    I --> J[Interactive Visualizations]
+    G --> K[CLAIRITY Dashboard]
+    I --> K
+```
+
+---
+
+## 5. Machine Learning
+
+We evaluated three machine-learning configurations:
+
+**Ventilator-only model:** Uses extracted ventilator features.
+
+**Sensors-only model:** Uses simulated capacitance and pH measurements.
+
+**Hybrid model:** Combines ventilator features with simulated sensor measurements.
+
+The experiments use a Random Forest classification approach.
+
+### Experimental Split
+
+| Dataset | Rows |
+|---|---:|
+| Training | 15,223 |
+| Testing | 4,777 |
+| Total | 20,000 |
+
+**Evaluation caveat:** We still need to verify that recordings are separated between training and testing by `recording_id`. If breaths from the same recording appear in both sets, reported performance may be optimistic. These results are therefore provisional.
+
+---
+
+## 6. Machine Learning Results
+
+### Model Comparison
+
+| Model | Accuracy |
+|---|---:|
+| Ventilator Only | 40.30% |
+| Sensors Only | 75.32% |
+| **Hybrid Model** | **76.24%** |
+
+The hybrid model achieved the highest reported accuracy in the current V2 experiment.
+
+Its improvement over the sensors-only model was approximately **0.92 percentage points**.
+
+This suggests that simulated sensor values were the main source of predictive information in this particular experiment. It does not establish the clinical value of either sensor type.
+
+![Model Accuracy Comparison](images/clairity_v2_model_accuracy_comparison.png.png)
+
+### Hybrid Model Classification Report
+
+| Condition | Precision | Recall | F1 Score | Test Samples |
+|---|---:|---:|---:|---:|
+| Normal | 0.82 | 0.85 | 0.83 | 2,376 |
+| At Risk | 0.61 | 0.59 | 0.60 | 1,375 |
+| Critical | 0.71 | 0.68 | 0.69 | 645 |
+| Sensor Failure | 1.00 | 1.00 | 1.00 | 381 |
+
+The perfect sensor-failure result should not be interpreted as real-world reliability. The simulated failure cases contain systematic missing-value patterns.
+
+### Confusion Matrix
+
+Rows represent actual simulated labels. Columns represent model predictions.
+
+| Actual / Predicted | Normal | At Risk | Critical | Sensor Failure |
+|---|---:|---:|---:|---:|
+| Normal | 2,017 | 333 | 26 | 0 |
+| At Risk | 418 | 807 | 150 | 0 |
+| Critical | 34 | 174 | 437 | 0 |
+| Sensor Failure | 0 | 0 | 0 | 381 |
+
+![Hybrid Confusion Matrix](images/hybrid_confusion_matrix_v2.png)
+
+### Prediction Error Analysis
+
+The hybrid model made **1,135 incorrect predictions** out of 4,777 test examples.
+
+Important errors include:
+
+- 418 At Risk cases predicted as Normal
+- 333 Normal cases predicted as At Risk
+- 174 Critical cases predicted as At Risk
+- 150 At Risk cases predicted as Critical
+- 34 Critical cases predicted as Normal
+- 26 Normal cases predicted as Critical
+
+The 34 Critical-to-Normal errors are particularly important to investigate in future experiments because they represent missed critical patterns within the simulation.
+
+![Hybrid Model Recall](images/hybrid_recall_v2.png)
+
+### Earlier Baseline
+
+An earlier rule-based model achieved 99.42% accuracy on 4,800 synthetic readings, and an earlier Random Forest experiment achieved 100% accuracy.
+
+These results were based on much simpler synthetic patterns. We subsequently developed a noisier V2 dataset with overlapping distributions to investigate more realistic classification difficulties.
+
+The original near-perfect scores are not evidence of clinical diagnostic accuracy.
+
+---
+
+## 7. Interactive Dashboard
+
+The CLAIRITY dashboard is built with Python, Streamlit, Plotly, and scikit-learn.
+
+It currently runs locally and provides a live-style simulation.
+
+### Dashboard Features
+
+| Page | Features |
+|---|---|
+| Live Monitoring | Automatic replay, pause, restart, current sensor values |
+| Model Performance | Accuracy comparison, confusion matrix, classification report |
+| Sensor Analysis | Interactive sensor distributions and statistics |
+| Prediction Errors | Incorrect classifications, filtering, CSV export |
+
+### Live Monitoring
+
+The dashboard automatically advances through existing records and updates:
+
+- Current model prediction
+- Above-cuff capacitance
+- Below-cuff capacitance
+- Above-cuff pH
+- Below-cuff pH
+- Ventilator feature summaries
+- Interactive sensor trends
+- Simulated notifications
+- Prediction history
+
+**Live replay is not the same as live medical-device acquisition.**
+
+The current dashboard does not receive measurements directly from physical sensors or a hospital ventilator.
+
+### Dashboard Link
+
+The public Streamlit dashboard has not yet been deployed.
+
+After deployment, add the verified Streamlit URL here.
+
+---
+
+## 8. Interactive Visualizations
+
+CLAIRITY includes six Plotly HTML visualizations that support hovering, zooming, and exploring numerical values.
+
+GitHub README files cannot execute interactive Plotly HTML directly. The following links are designed to work after publishing the HTML files through GitHub Pages.
+
+| Interactive Graph | Open |
+|---|---|
+| Confusion Matrix | [Explore](https://elmehdi02.github.io/CLAIRITY/plots/interactive_confusion_matrix.html) |
+| Prediction Errors | [Explore](https://elmehdi02.github.io/CLAIRITY/plots/interactive_prediction_errors.html) |
+| Capacitance Above Cuff | [Explore](https://elmehdi02.github.io/CLAIRITY/plots/interactive_capacitance_above.html) |
+| Capacitance Below Cuff | [Explore](https://elmehdi02.github.io/CLAIRITY/plots/interactive_capacitance_below.html) |
+| pH Above Cuff | [Explore](https://elmehdi02.github.io/CLAIRITY/plots/interactive_ph_above.html) |
+| pH Below Cuff | [Explore](https://elmehdi02.github.io/CLAIRITY/plots/interactive_ph_below.html) |
+
+> **Deployment status:** These are intended GitHub Pages addresses, not confirmed working links. Enable GitHub Pages, publish the files, and test each URL before sharing them.
+
+### Sensor Distribution Preview
+
+![Simulated Sensor Distributions](images/sensor_distribution_v2.png)
+
+The synthetic critical cases generally show higher capacitance and lower pH values, but the distributions overlap considerably.
+
+These trends result from the simulation design and have not been confirmed through physical sensor experiments.
+
+---
+
+## 9. Project Structure
+
+```text
+CLAIRITY/
+|
+|-- .streamlit/
+|   |-- config.toml
+|
+|-- data/
+|   |-- raw/
+|   |-- processed/
+|   |   |-- ventilator_features.csv
+|   |   |-- clairity_hybrid_v2.csv
+|   |   |-- model_comparison_v2.csv
+|   |   |-- clairity_hybrid_predictions_v2.csv
+|   |-- clairity_model_v2.pkl
+|
+|-- images/
+|   |-- model and sensor visualizations
+|
+|-- plots/
+|   |-- interactive_confusion_matrix.html
+|   |-- interactive_prediction_errors.html
+|   |-- interactive_capacitance_above.html
+|   |-- interactive_capacitance_below.html
+|   |-- interactive_ph_above.html
+|   |-- interactive_ph_below.html
+|
+|-- src/
+|   |-- data processing scripts
+|   |-- sensor generation scripts
+|   |-- model training scripts
+|   |-- model comparison scripts
+|   |-- error analysis scripts
+|
+|-- app.py
+|-- requirements.txt
+|-- README.md
+```
+
+Additional legacy AuraDx files are retained for the earlier prototype experiments.
+
+---
+
+## 10. Installation
+
+### Requirements
+
+- Python 3.10 or newer recommended
+- Streamlit
+- Pandas
+- NumPy
+- Plotly
+- Joblib
+- Scikit-learn
+
+### Clone the Repository
+
+```powershell
+git clone https://github.com/ElMehdi02/CLAIRITY.git
+cd CLAIRITY
+```
+
+### Create a Virtual Environment
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+### Install Dependencies
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+If necessary, install the dashboard dependencies directly:
+
+```powershell
+python -m pip install streamlit pandas numpy plotly joblib scikit-learn
+```
+
+### Run the Dashboard
+
+```powershell
+python -m streamlit run app.py
+```
+
+Open the local URL displayed in the terminal.
+
+The processed dataset and trained model must be present in their expected locations for the dashboard to run.
+
+---
+
+## 11. Technology Stack
+
+| Technology | Application |
+|---|---|
+| Python | Data processing and machine learning |
+| Pandas | Data cleaning and feature analysis |
+| NumPy | Numerical operations |
+| Scikit-learn | Machine-learning classification and evaluation |
+| Joblib | Model storage and loading |
+| Streamlit | Interactive monitoring dashboard |
+| Plotly | Interactive visualizations |
+| Matplotlib | Static scientific figures |
+| Git and GitHub | Version control and project publication |
+| GitHub Pages | Hosting interactive HTML plots |
+
+---
+
+## 12. Limitations
+
+CLAIRITY is an experimental software and medical-device concept.
+
+Current limitations include:
+
+1. The physical sensor device has not been constructed.
+2. Capacitance and pH readings are simulated.
+3. Experimental labels are synthetic.
+4. No clinical ground-truth aspiration measurements are available.
+5. Sensor calibration and physical measurement units remain unverified.
+6. Ventilator signal channel identities need verification.
+7. The model may confuse Normal, At Risk, and Critical conditions.
+8. Sensor-failure detection benefits from an artificial missing-value pattern.
+9. The training/test split must be checked for recording-level leakage.
+10. The dashboard replays existing records instead of receiving live hardware data.
+11. Dataset licensing and original source attribution require verification.
+12. No patient testing or clinical validation has been performed.
+
+These limitations are essential when interpreting the reported model accuracy.
+
+---
+
+## 13. Future Development
+
+### Machine Learning
+
+- Verify recording-level training and testing separation
+- Evaluate models on unseen source recordings
+- Improve detection of simulated Critical cases
+- Test additional noise and missing-data scenarios
+- Evaluate class imbalance and prediction confidence
+- Document random seeds and preprocessing assumptions
 
 ### Hardware
 
-- Capacitive fluid sensor
-- pH sensors
-- Pressure sensor
-- ESP32 or similar microcontroller
-- Simulated ventilator signals or an approved benchtop test setup
+- Prototype the proposed capacitive sensors
+- Investigate HPTS fluorescence-based pH sensing
+- Conduct controlled bench testing
+- Calibrate sensor measurements
+- Explore real-time acquisition interfaces
+- Assess sensor reliability and failure behavior
 
 ### Software
 
-- Python for data processing
-- pandas and NumPy for calculations
-- Streamlit or another web framework for the dashboard
-- Plotly for real-time graphs
-- Machine learning libraries if needed
-- GitHub for collaboration
+- Deploy the Streamlit dashboard online
+- Publish interactive charts through GitHub Pages
+- Add a streaming-data adapter when real hardware becomes available
+- Improve event history and monitoring visualizations
+- Add reproducible experiment configuration and tests
 
-The final technologies may change as we test the prototype.
+### Scientific Validation
 
----
-
-## 10. Our Next Steps
-
-1. Finalize the sensor selection.
-2. Develop a safe benchtop testing setup.
-3. Connect the available sensors to a microcontroller.
-4. Collect sample measurements.
-5. Build the Python data analysis system.
-6. Create the monitoring dashboard.
-7. Implement the alert system.
-8. Test normal conditions and simulated leak scenarios.
-9. Evaluate detection accuracy and false alarms.
-10. Demonstrate a simulated nurse notification workflow.
+- Confirm ventilator channel names and units
+- Validate the sensor concept in laboratory conditions
+- Compare simulated assumptions with physical measurements
+- Evaluate safety, reliability, and clinical feasibility before any medical use
 
 ---
 
-## 11. Our Long-Term Vision
+## 14. Research Ethics and Safety
 
-Our long-term vision is to create a monitoring system that can support healthcare professionals caring for patients who require mechanical ventilation.
+CLAIRITY is intended for education, experimentation, and prototype development.
 
-We hope AuraDx could eventually help identify possible airway seal problems earlier and provide nurses with clearer information.
+The project does not claim to:
 
-Before any clinical use, the device and software would require appropriate engineering testing, safety evaluation, clinical validation, and regulatory review.
+- Diagnose aspiration or ventilator-associated pneumonia
+- Replace medical professionals
+- Provide validated clinical alarms
+- Prevent pneumonia
+- Monitor real patients
+- Demonstrate clinically established accuracy
 
-**AuraDx is currently a research and hackathon prototype concept. It is not an approved medical device and should not be used for patient monitoring or clinical decisions.**
-
----
-
-## 12. Project Information
-
-**Project:** AuraDx — Smart Airway Seal Monitoring
-
-**Event:** Nucleate Pittsburgh BioHack 2026
-
-**Challenge Sponsor:** RespAir Medical Devices
-
-**Track:** MedTech — Hardware & Biosensors
-
-**Project Focus:** Medical Sensors, Data Science, Real-Time Monitoring, and Healthcare Software
+Any future clinical application would require appropriate engineering verification, safety assessment, ethical review, and regulatory evaluation.
 
 ---
 
-*Developed as part of Nucleate Pittsburgh BioHack 2026.*
+## 15. Acknowledgments
+
+Developed for the **Nucleate Pittsburgh BioHack 2026** respiratory medical-device challenge.
+
+The project combines proposed medical-device sensing, data science, machine learning, and interactive software development.
+
+Team members, mentors, original dataset attribution, and scientific references should be added after verification.
+
+---
+
+<div align="center">
+
+### CLAIRITY
+
+**Exploring intelligent airway monitoring through multisensor research and machine learning.**
+
+*Research prototype · Not for clinical use*
+
+</div>

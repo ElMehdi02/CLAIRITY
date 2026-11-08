@@ -1,0 +1,99 @@
+
+name: Publish CLAIRITY Interactive Plots
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "plots/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create static website
+        run: |
+          mkdir -p _site/plots
+
+          cp plots/*.html _site/plots/
+
+          touch _site/.nojekyll
+
+          cat > _site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>CLAIRITY | Interactive Visualizations</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                background: #F8FAFC;
+                color: #0F172A;
+                max-width: 900px;
+                margin: 50px auto;
+                padding: 20px;
+              }
+              h1 { color: #0066CC; }
+              a {
+                display: block;
+                padding: 15px;
+                margin: 12px 0;
+                background: white;
+                border: 1px solid #E2E8F0;
+                border-radius: 10px;
+                color: #0066CC;
+                text-decoration: none;
+              }
+              a:hover { background: #EFF6FF; }
+              p { color: #64748B; }
+            </style>
+          </head>
+          <body>
+            <h1>CLAIRITY</h1>
+            <h2>Interactive Research Visualizations</h2>
+            <p>Explore our experimental machine-learning and simulated sensor results.</p>
+            <p>Research prototype. Not for clinical use.</p>
+
+            <a href="plots/interactive_confusion_matrix.html">Confusion Matrix</a>
+            <a href="plots/interactive_prediction_errors.html">Prediction Errors</a>
+            <a href="plots/interactive_capacitance_above.html">Capacitance Above Cuff</a>
+            <a href="plots/interactive_capacitance_below.html">Capacitance Below Cuff</a>
+            <a href="plots/interactive_ph_above.html">pH Above Cuff</a>
+            <a href="plots/interactive_ph_below.html">pH Below Cuff</a>
+          </body>
+          </html>
+          EOF
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
