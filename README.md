@@ -59,6 +59,8 @@ The goal is to investigate whether these different signals can help distinguish 
 
 CLAIRITY proposes a multisensor endotracheal tube monitoring system.
 
+![CLAIRITY Device Concept](images/device.jpg)
+
 | Component | Proposed Function |
 |---|---|
 | Capacitive sensor above cuff | Monitor changes associated with fluid accumulation |
