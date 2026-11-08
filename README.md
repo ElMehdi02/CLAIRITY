@@ -13,10 +13,10 @@
 ![Machine Learning](https://img.shields.io/badge/ML-Random%20Forest-0066CC)
 ![Status](https://img.shields.io/badge/Status-Research%20Prototype-D97706)
 
-[Dashboard](#interactive-dashboard) |
-[Results](#machine-learning-results) |
-[Interactive Charts](#interactive-visualizations) |
-[Installation](#installation)
+[Dashboard](#7-interactive-dashboard) |
+[Results](#6-machine-learning-results) |
+[Interactive Charts](#8-interactive-visualizations) |
+[Installation](#10-installation)
 
 </div>
 
